@@ -1,0 +1,1 @@
+tfstate_bucket = "tfstate-my-k8s-lab-<TU_ACCOUNT_ID>-us-east-1"

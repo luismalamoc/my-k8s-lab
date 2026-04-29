@@ -1,0 +1,11 @@
+replicas: 1
+image:
+  pullPolicy: Never
+env:
+  APP_ENV: "minikube"
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "hello.local"
+pdb:
+  enabled: false

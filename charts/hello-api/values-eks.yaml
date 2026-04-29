@@ -1,0 +1,55 @@
+# Values para hello-api en EKS.
+#
+# Estado por defecto (final de Fase 6): service.type=ClusterIP, validación con
+# `kubectl port-forward`. Sin recursos AWS extra, $0.
+#
+# Para exponer la app públicamente (Fase 7), cambiar service.type a LoadBalancer.
+# Ver detalles, diff exacto y annotations opcionales en ROADMAP.md → Fase 7.
+
+replicas: 1                       # single-node lab, una réplica alcanza
+
+image:
+  repository: <ACCT>.dkr.ecr.us-east-1.amazonaws.com/hello-api
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+env:
+  APP_ENV: "eks"
+
+resources:
+  requests: { cpu: 50m, memory: 64Mi }
+  limits:   { cpu: 200m, memory: 128Mi }
+
+service:
+  type: LoadBalancer                 # cambiar a LoadBalancer en Fase 7
+  port: 80
+  targetPort: 8080
+  annotations: {}                 # opciones del CLB en Fase 7 (source-ranges, ACM, etc.)
+
+ingress:
+  enabled: false                  # no hace falta sin ALB Controller
+
+serviceAccount:
+  create: true
+  name: hello-api-sa              # usá el mismo nombre en el Pod Identity Association
+  annotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+autoscaling:
+  enabled: false                  # HPA off en single-node
+
+pdb:
+  enabled: false                  # con replicas=1 no aporta nada
+
+topologySpread:
+  enabled: false                  # off en cluster de 1 nodo

@@ -1,0 +1,11 @@
+name: chart-lint
+on: [pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with: { version: v3.18.0 }
+      - run: helm lint charts/hello-api -f charts/hello-api/values.yaml
+      - run: helm lint charts/hello-api -f charts/hello-api/values-minikube.yaml

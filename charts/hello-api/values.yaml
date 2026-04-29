@@ -1,0 +1,58 @@
+replicas: 2
+
+image:
+  repository: hello-api
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+env:
+  APP_ENV: "default"
+
+resources:
+  requests: { cpu: 50m, memory: 64Mi }
+  limits:   { cpu: 200m, memory: 128Mi }
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  host: ""
+  annotations: {}
+  tls: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}                # extender por cloud (Workload Identity, etc.)
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+pdb:
+  enabled: true
+  maxUnavailable: 1
+
+topologySpread:
+  enabled: false                 # off en cluster de 1 nodo
+
+nodeSelector: {}
+tolerations: []
